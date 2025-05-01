@@ -20,7 +20,7 @@ products.forEach((product) => {
 
           <div class="product-rating-container">
             <img class="product-rating-stars"
-              src="images/ratings/rating-${product.rating.stars*10}.png">
+              src="images/ratings/rating-${product.rating.stars * 10}.png">
             <div class="product-rating-count link-primary">
               ${product.rating.count}
             </div>
@@ -29,7 +29,7 @@ products.forEach((product) => {
           <div class="product-price">
             <!-- The toFixed() method converts a number to a string.
             The toFixed() method rounds the string to a specified number of decimals --!>
-            $${(product.priceCents/100).toFixed(2)}
+            $${(product.priceCents / 100).toFixed(2)}
           </div>
 
           <div class="product-quantity-container">
@@ -54,11 +54,47 @@ products.forEach((product) => {
             Added
           </div>
 
-          <button class="add-to-cart-button button-primary">
+          <button class="add-to-cart-button button-primary js-add-to-cart-button"
+                  data-product-id="${product.id}">
             Add to Cart
           </button>
         </div>
     `;
-    
-    document.querySelector('.js-products-grid').innerHTML = productHTML;
 })
+document.querySelector('.js-products-grid').innerHTML = productHTML;
+
+//Add eventlistener to add to cart button using forEach loop for every button in page
+document.querySelectorAll('.js-add-to-cart-button')
+    .forEach((button) => {
+        button.addEventListener('click', () => {
+            /*dataset is used to get name of specific product using HTML data attribute used
+              in button class above*/
+            const productId = button.dataset.productId;
+
+            /* Belove forEach loop is used to find if same product name is exist or not in cart
+            array*/
+            let matchingItem;
+            cart.forEach((item) => {
+                if(productId === item.productId){
+                    matchingItem = item;
+                }
+            });
+
+            //If product name exist then increase product quantity by 1 
+            //else add whole object in array
+            if(matchingItem){
+                matchingItem.quantity += 1;
+            }
+            else{
+                cart.push({
+                    productId: productId,
+                    quantity: 1
+                });
+            }
+            console.log(cart);
+        });
+    });
+
+
+
+
