@@ -62,7 +62,6 @@ products.forEach((product) => {
     `;
 })
 document.querySelector('.js-products-grid').innerHTML = productHTML;
-
 //Add eventlistener to add to cart button using forEach loop for every button in page
 document.querySelectorAll('.js-add-to-cart-button')
     .forEach((button) => {
@@ -91,9 +90,17 @@ document.querySelectorAll('.js-add-to-cart-button')
                     quantity: 1
                 });
             }
-            console.log(cart);
+
+            //count total quantity in cart
+            let cartQuantity = 0;
+            cart.forEach((item) =>{
+                cartQuantity = cartQuantity + item.quantity;
+            });
+            document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
         });
     });
+    
+
 
 
 
