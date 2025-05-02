@@ -1,5 +1,5 @@
 import { cart } from "../data/cart.js";
-
+import { products } from "../data/products.js";
 //Products array is created in another file named products.js
 //ForEach loop to add html code for every product in page
 //Add every product html code to productHTML string variable
