@@ -1,3 +1,4 @@
+import { cart } from "../data/cart.js";
 
 //Products array is created in another file named products.js
 //ForEach loop to add html code for every product in page
