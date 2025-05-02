@@ -1,5 +1,6 @@
 import { cart, addToCart } from "../data/cart.js";
 import { products } from "../data/products.js";
+import { formatCurrency } from "./utils/money.js";
 //Products array is created in another file named products.js
 //ForEach loop to add html code for every product in page
 //Add every product html code to productHTML string variable
@@ -30,7 +31,7 @@ products.forEach((product) => {
           <div class="product-price">
             <!-- The toFixed() method converts a number to a string.
             The toFixed() method rounds the string to a specified number of decimals --!>
-            $${(product.priceCents / 100).toFixed(2)}
+            $${formatCurrency(product.priceCents)}
           </div>
 
           <div class="product-quantity-container">
