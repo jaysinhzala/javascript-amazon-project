@@ -1,4 +1,4 @@
-import { cart } from "../data/cart.js";
+import { cart, addToCart } from "../data/cart.js";
 import { products } from "../data/products.js";
 //Products array is created in another file named products.js
 //ForEach loop to add html code for every product in page
@@ -63,6 +63,17 @@ products.forEach((product) => {
     `;
 })
 document.querySelector('.js-products-grid').innerHTML = productHTML;
+
+//function to update cart quantity
+function updateCartQuantity() {
+    //count total quantity in cart
+    let cartQuantity = 0;
+    cart.forEach((cartItem) => {
+        cartQuantity = cartQuantity + cartItem.quantity;
+    });
+    document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+}
+
 //Add eventlistener to add to cart button using forEach loop for every button in page
 document.querySelectorAll('.js-add-to-cart-button')
     .forEach((button) => {
@@ -70,37 +81,11 @@ document.querySelectorAll('.js-add-to-cart-button')
             /*dataset is used to get name of specific product using HTML data attribute used
               in button class above*/
             const productId = button.dataset.productId;
-
-            /* Belove forEach loop is used to find if same product name is exist or not in cart
-            array*/
-            let matchingItem;
-            cart.forEach((item) => {
-                if(productId === item.productId){
-                    matchingItem = item;
-                }
-            });
-
-            //If product name exist then increase product quantity by 1 
-            //else add whole object in array
-            if(matchingItem){
-                matchingItem.quantity += 1;
-            }
-            else{
-                cart.push({
-                    productId: productId,
-                    quantity: 1
-                });
-            }
-
-            //count total quantity in cart
-            let cartQuantity = 0;
-            cart.forEach((item) =>{
-                cartQuantity = cartQuantity + item.quantity;
-            });
-            document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+            addToCart(productId);
+            updateCartQuantity();
         });
     });
-    
+
 
 
 
