@@ -129,6 +129,8 @@ export function renderOrderSummery() {
                 //remove method is inbuild method in DOM to delete element in HTML
                 const container = document.querySelector(`.js-cart-item-container-${productId}`);
                 container.remove();
+
+                renderPaymentSummary();
             });
         });
 
@@ -144,7 +146,7 @@ export function renderOrderSummery() {
                 updateDeliveryOption(productId, deliveryOptionId);
                 //calling function to rerun whole code to update delivery date
                 renderOrderSummery();
-                
+                renderPaymentSummary();
             });
         });
 }
