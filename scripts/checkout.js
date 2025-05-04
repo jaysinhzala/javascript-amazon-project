@@ -4,33 +4,40 @@ import { formatCurrency } from "./utils/money.js";
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 import { deliveryOptions } from "../data/deliveryOption.js";
 
-let cartSummaryHTML = '';
-cart.forEach((cartItem) => {
+/**
+ * All of this code is combined to this function cause we need to update delivery date
+ * every time we select different delivery date from radio button.
+ * So every time when we select delivery date from radio button this function will call again
+ * to update the delivery date
+ */
+function renderOrderSummery() {
+    let cartSummaryHTML = '';
+    cart.forEach((cartItem) => {
 
-    const productId = cartItem.productId;
-    let matchingProduct;
+        const productId = cartItem.productId;
+        let matchingProduct;
 
-    products.forEach((product) => {
-        if (productId === product.id) {
-            matchingProduct = product;
-        }
-    });
+        products.forEach((product) => {
+            if (productId === product.id) {
+                matchingProduct = product;
+            }
+        });
 
-    //Below code is to show selected delivery date in html page
-    const deliveryOptionId = cartItem.deliveryOptionId;
-    let deliveryOption;
+        //Below code is to show selected delivery date in html page
+        const deliveryOptionId = cartItem.deliveryOptionId;
+        let deliveryOption;
 
-    deliveryOptions.forEach((option) => {
-        if(option.id === deliveryOptionId){
-            deliveryOption = option;
-        }
-    });
-    const today = dayjs();
-    const deliveryDate = today.add(deliveryOption.deliveryDays, 'day');
-    const dateString = deliveryDate.format('dddd, MMMM D');
+        deliveryOptions.forEach((option) => {
+            if (option.id === deliveryOptionId) {
+                deliveryOption = option;
+            }
+        });
+        const today = dayjs();
+        const deliveryDate = today.add(deliveryOption.deliveryDays, 'day');
+        const dateString = deliveryDate.format('dddd, MMMM D');
 
-    cartSummaryHTML +=
-        `
+        cartSummaryHTML +=
+            `
     <div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
             <div class="delivery-date">
               Delivery date: ${dateString}
@@ -65,36 +72,36 @@ cart.forEach((cartItem) => {
                 <div class="delivery-options-title">
                   Choose a delivery option:
                 </div>
-                ${deliveryOptionsHTML(matchingProduct,cartItem)}
+                ${deliveryOptionsHTML(matchingProduct, cartItem)}
               </div>
             </div>
           </div>
     `
-});
+    });
 
-//Function to genrate html for delivery option for each product
-function deliveryOptionsHTML(matchingProduct,cartItem) {
-    let html = '';
-    deliveryOptions.forEach((deliveryOption) => {
+    //Function to genrate html for delivery option for each product
+    function deliveryOptionsHTML(matchingProduct, cartItem) {
+        let html = '';
+        deliveryOptions.forEach((deliveryOption) => {
 
-        /*dayjs is external libery function imported in file using EcmaScript module in top of the file
-        dayjs function have add method to add specific date to current date
-        check dayjs documentation online for more detail
-        */
-        const today = dayjs();
-        const deliveryDate = today.add(deliveryOption.deliveryDays, 'day');
-        const dateString = deliveryDate.format('dddd, MMMM D');
+            /*dayjs is external libery function imported in file using EcmaScript module in top of the file
+            dayjs function have add method to add specific date to current date
+            check dayjs documentation online for more detail
+            */
+            const today = dayjs();
+            const deliveryDate = today.add(deliveryOption.deliveryDays, 'day');
+            const dateString = deliveryDate.format('dddd, MMMM D');
 
-        //Used ternary operator to store delivery fee into variable
-        const priceString =
-            deliveryOption.priceCents === 0
-                ? 'FREE'
-                : `$${formatCurrency(deliveryOption.priceCents)} -`;
+            //Used ternary operator to store delivery fee into variable
+            const priceString =
+                deliveryOption.priceCents === 0
+                    ? 'FREE'
+                    : `$${formatCurrency(deliveryOption.priceCents)} -`;
 
-        const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
+            const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
 
-        html +=
-        `
+            html +=
+                `
         <div class="delivery-option js-delivery-option"
              data-product-id= "${matchingProduct.id}"
              data-delivery-option-id= "${deliveryOption.id}">
@@ -112,36 +119,41 @@ function deliveryOptionsHTML(matchingProduct,cartItem) {
                   </div>
                 </div>
         `;
-    });
-    return html;
+        });
+        return html;
+    }
+
+    document.querySelector('.js-order-summary')
+        .innerHTML = cartSummaryHTML;
+
+    //add eventlistener to delete specific item from cart
+    document.querySelectorAll('.js-delete-link')
+        .forEach((link) => {
+            link.addEventListener('click', () => {
+                const productId = link.dataset.productId;
+                removeFromCart(productId);
+
+                //Used DOM to select specific item container  in HTML and delete that
+                //remove method is inbuild method in DOM to delete element in HTML
+                const container = document.querySelector(`.js-cart-item-container-${productId}`);
+                container.remove();
+            });
+        });
+
+    //add event listener for each radio button to update delivery date when we select delivery date from radio button
+    document.querySelectorAll('.js-delivery-option')
+        .forEach((element) => {
+            element.addEventListener('click', () => {
+                /*const productId = element.dataset.productId;
+                  const deliveryOptionId = element.dataset.deliveryOptionId;
+                  below is shorthand property for above code
+                */
+                const { productId, deliveryOptionId } = element.dataset;
+                updateDeliveryOption(productId, deliveryOptionId);
+                //calling function to rerun whole code to update delivery date
+                renderOrderSummery();
+            });
+        });
 }
 
-document.querySelector('.js-order-summary')
-    .innerHTML = cartSummaryHTML;
-
-//add eventlistener to delete specific item from cart
-document.querySelectorAll('.js-delete-link')
-    .forEach((link) => {
-        link.addEventListener('click', () => {
-            const productId = link.dataset.productId;
-            removeFromCart(productId);
-
-            //Used DOM to select specific item container  in HTML and delete that
-            //remove method is inbuild method in DOM to delete element in HTML
-            const container = document.querySelector(`.js-cart-item-container-${productId}`);
-            container.remove();
-        });
-    });
-
-//add event listener for each radio button to update delivery date when we select delivery date from radio button
-document.querySelectorAll('.js-delivery-option')
-    .forEach((element) => {
-        element.addEventListener('click',() => {
-            /*const productId = element.dataset.productId;
-              const deliveryOptionId = element.dataset.deliveryOptionId;
-              below is shorthand property for above code
-            */
-            const {productId,deliveryOptionId} = element.dataset;
-            updateDeliveryOption(productId,deliveryOptionId);
-        });
-    });
+renderOrderSummery();
