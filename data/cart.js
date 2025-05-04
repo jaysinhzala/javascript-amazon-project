@@ -68,3 +68,18 @@ export function removeFromCart(productId) {
     //update localstorage by calling function
     saveToStorage();
 }
+
+
+export function updateDeliveryOption(productId, deliveryOptionId){
+    /* Belove forEach loop is used to find if same product name is exist or not in cart
+       array
+    */
+    let matchingItem;
+    cart.forEach((cartItem) => {
+        if (productId === cartItem.productId) {
+            matchingItem = cartItem;
+        }
+    });
+    matchingItem.deliveryOptionId = deliveryOptionId;
+    saveToStorage();
+}
