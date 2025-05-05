@@ -1,5 +1,5 @@
 //This file is for test different test cases for Money.js function
-import { formatCurrency } from "../scripts/utils/money.js";
+import { formatCurrency } from "../../scripts/utils/money.js";
 
 console.log('Test Suits : FormatCurrency');
 //Below line is name of test cases
