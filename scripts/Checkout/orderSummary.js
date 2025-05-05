@@ -14,23 +14,25 @@ import { renderPaymentSummary } from "./paymentSummary.js";
  * Model View Controller
  */
 export function renderOrderSummery() {
-    let cartSummaryHTML = '';
-    cart.forEach((cartItem) => {
+  let cartSummaryHTML = '';
+  cart.forEach((cartItem) => {
 
-        const productId = cartItem.productId;
-        let matchingProduct = getProduct(productId);
+    const productId = cartItem.productId;
+    let matchingProduct = getProduct(productId);
 
-        //Below code is to show selected delivery date in html page
-        const deliveryOptionId = cartItem.deliveryOptionId;
-        const deliveryOption = getDeliveryOption(deliveryOptionId);
+    //Below code is to show selected delivery date in html page
+    const deliveryOptionId = cartItem.deliveryOptionId;
+    const deliveryOption = getDeliveryOption(deliveryOptionId);
 
-        const today = dayjs();
-        const deliveryDate = today.add(deliveryOption.deliveryDays, 'day');
-        const dateString = deliveryDate.format('dddd, MMMM D');
+    const today = dayjs();
+    const deliveryDate = today.add(deliveryOption.deliveryDays, 'day');
+    const dateString = deliveryDate.format('dddd, MMMM D');
 
-        cartSummaryHTML +=
-            `
-    <div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
+    cartSummaryHTML +=
+      `
+    <div class="cart-item-container 
+      js-cart-item-container
+      js-cart-item-container-${matchingProduct.id}">
             <div class="delivery-date">
               Delivery date: ${dateString}
             </div>
@@ -46,7 +48,8 @@ export function renderOrderSummery() {
                 <div class="product-price">
                   $${formatCurrency(matchingProduct.priceCents)}
                 </div>
-                <div class="product-quantity">
+                <div class="product-quantity
+                      js-product-quantity-${matchingProduct.id}">
                   <span>
                     Quantity: <span class="quantity-label">${cartItem.quantity}</span>
                   </span>
@@ -54,7 +57,8 @@ export function renderOrderSummery() {
                     Update
                   </span>
                   <span class="delete-quantity-link link-primary
-                    js-delete-link" data-product-id=${matchingProduct.id}>
+                    js-delete-link js-delete-link-${matchingProduct.id}" 
+                    data-product-id=${matchingProduct.id}>
                     Delete
                   </span>
                 </div>
@@ -69,31 +73,31 @@ export function renderOrderSummery() {
             </div>
           </div>
     `
-    });
+  });
 
-    //Function to genrate html for delivery option for each product
-    function deliveryOptionsHTML(matchingProduct, cartItem) {
-        let html = '';
-        deliveryOptions.forEach((deliveryOption) => {
+  //Function to genrate html for delivery option for each product
+  function deliveryOptionsHTML(matchingProduct, cartItem) {
+    let html = '';
+    deliveryOptions.forEach((deliveryOption) => {
 
-            /*dayjs is external libery function imported in file using EcmaScript module in top of the file
-            dayjs function have add method to add specific date to current date
-            check dayjs documentation online for more detail
-            */
-            const today = dayjs();
-            const deliveryDate = today.add(deliveryOption.deliveryDays, 'day');
-            const dateString = deliveryDate.format('dddd, MMMM D');
+      /*dayjs is external libery function imported in file using EcmaScript module in top of the file
+      dayjs function have add method to add specific date to current date
+      check dayjs documentation online for more detail
+      */
+      const today = dayjs();
+      const deliveryDate = today.add(deliveryOption.deliveryDays, 'day');
+      const dateString = deliveryDate.format('dddd, MMMM D');
 
-            //Used ternary operator to store delivery fee into variable
-            const priceString =
-                deliveryOption.priceCents === 0
-                    ? 'FREE'
-                    : `$${formatCurrency(deliveryOption.priceCents)} -`;
+      //Used ternary operator to store delivery fee into variable
+      const priceString =
+        deliveryOption.priceCents === 0
+          ? 'FREE'
+          : `$${formatCurrency(deliveryOption.priceCents)} -`;
 
-            const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
+      const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
 
-            html +=
-                `
+      html +=
+        `
         <div class="delivery-option js-delivery-option"
              data-product-id= "${matchingProduct.id}"
              data-delivery-option-id= "${deliveryOption.id}">
@@ -111,44 +115,43 @@ export function renderOrderSummery() {
                   </div>
                 </div>
         `;
-        });
-        return html;
-    }
+    });
+    return html;
+  }
 
-    document.querySelector('.js-order-summary')
-        .innerHTML = cartSummaryHTML;
+  document.querySelector('.js-order-summary')
+    .innerHTML = cartSummaryHTML;
 
-    //add eventlistener to delete specific item from cart
-    document.querySelectorAll('.js-delete-link')
-        .forEach((link) => {
-            link.addEventListener('click', () => {
-                const productId = link.dataset.productId;
-                removeFromCart(productId);
+  //add eventlistener to delete specific item from cart
+  document.querySelectorAll('.js-delete-link')
+    .forEach((link) => {
+      link.addEventListener('click', () => {
+        const productId = link.dataset.productId;
+        removeFromCart(productId);
 
-                //Used DOM to select specific item container  in HTML and delete that
-                //remove method is inbuild method in DOM to delete element in HTML
-                const container = document.querySelector(`.js-cart-item-container-${productId}`);
-                container.remove();
+        //Used DOM to select specific item container  in HTML and delete that
+        //remove method is inbuild method in DOM to delete element in HTML
+        const container = document.querySelector(`.js-cart-item-container-${productId}`);
+        container.remove();
 
-                renderPaymentSummary();
-            });
-        });
+        renderPaymentSummary();
+      });
+    });
 
-    //add event listener for each radio button to update delivery date when we select delivery date from radio button
-    document.querySelectorAll('.js-delivery-option')
-        .forEach((element) => {
-            element.addEventListener('click', () => {
-                /*const productId = element.dataset.productId;
-                  const deliveryOptionId = element.dataset.deliveryOptionId;
-                  below is shorthand property for above code
-                */
-                const { productId, deliveryOptionId } = element.dataset;
-                updateDeliveryOption(productId, deliveryOptionId);
-                //calling function to rerun whole code to update delivery date
-                renderOrderSummery();
-                renderPaymentSummary();
-            });
-        });
+  //add event listener for each radio button to update delivery date when we select delivery date from radio button
+  document.querySelectorAll('.js-delivery-option')
+    .forEach((element) => {
+      element.addEventListener('click', () => {
+        /*const productId = element.dataset.productId;
+          const deliveryOptionId = element.dataset.deliveryOptionId;
+          below is shorthand property for above code
+        */
+        const { productId, deliveryOptionId } = element.dataset;
+        updateDeliveryOption(productId, deliveryOptionId);
+        //calling function to rerun whole code to update delivery date
+        renderOrderSummery();
+        renderPaymentSummary();
+      });
+    });
 }
 
-renderOrderSummery();

@@ -10,7 +10,7 @@ import { formatCurrency } from "../../scripts/utils/money.js";
  * 1.name of test case 
  * 2. function which contains test
  * */ 
-describe('Test suit: formatCurrency', () => {
+describe('Test suite: formatCurrency', () => {
     it('convert cents into dollers', () => {
         //expect compares two values
         expect(formatCurrency(2095)).toEqual('20.95');
