@@ -1,18 +1,23 @@
 //use localstorage to getitem into cart array
 //JSON parse is used to convert string back to its default value
-export let cart = JSON.parse(localStorage.getItem('cart'));
+export let cart;
+loadFromStorage();
 
-//use if statement to check if cart is empty. if true will set default value to cart array
-if (!cart) {
-    cart = [{
-        productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
-        quantity: 2,
-        deliveryOptionId: '1'
-    }, {
-        productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
-        quantity: 1,
-        deliveryOptionId: '2'
-    }];
+export function loadFromStorage() {
+    cart = JSON.parse(localStorage.getItem('cart'));
+
+    //use if statement to check if cart is empty. if true will set default value to cart array
+    if (!cart) {
+        cart = [{
+            productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+            quantity: 2,
+            deliveryOptionId: '1'
+        }, {
+            productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
+            quantity: 1,
+            deliveryOptionId: '2'
+        }];
+    }
 }
 
 /*create a function to save cart to localstorage
@@ -70,7 +75,7 @@ export function removeFromCart(productId) {
 }
 
 
-export function updateDeliveryOption(productId, deliveryOptionId){
+export function updateDeliveryOption(productId, deliveryOptionId) {
     /* Belove forEach loop is used to find if same product name is exist or not in cart
        array
     */

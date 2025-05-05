@@ -1,5 +1,5 @@
 //This file is for test different test cases for Money.js function
-import { formatCurrency } from "../scripts/utils/money.js";
+import { formatCurrency } from "../../scripts/utils/money.js";
 /** 
  * describe function is inbuid function in jasmine to create test suit.
  * it takes two argument.
