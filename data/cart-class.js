@@ -1,17 +1,18 @@
 class Cart{
+    //if we add # infront of any variable it becomes private member
     cartItems;
-    localStorageKey;
+    #localStorageKey;
 
     constructor(localStorageKey){
-        this.localStorageKey = localStorageKey; 
-        this.loadFromStorage(); 
+        this.#localStorageKey = localStorageKey; 
+        this.#localStorageKey(); 
     }
 
     //use localstorage to getitem into cart array
         //JSON parse is used to convert string back to its default value  
         //loadFromStorage() is shortcut for loadfromStorage:function{}
-        loadFromStorage() {
-            this.cartItems = JSON.parse(localStorage.getItem(this.localStorageKey));
+        #loadFromStorage() {
+            this.cartItems = JSON.parse(localStorage.getItem(this.#localStorageKey));
     
             //use if statement to check if cart is empty. if true will set default value to cart array
             if (!this.cartItems) {
