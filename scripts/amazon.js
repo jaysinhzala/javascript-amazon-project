@@ -22,7 +22,7 @@ products.forEach((product) => {
 
           <div class="product-rating-container">
             <img class="product-rating-stars"
-              src="images/ratings/rating-${product.rating.stars * 10}.png">
+              src="${product.getStarsUrl()}">
             <div class="product-rating-count link-primary">
               ${product.rating.count}
             </div>
@@ -31,7 +31,7 @@ products.forEach((product) => {
           <div class="product-price">
             <!-- The toFixed() method converts a number to a string.
             The toFixed() method rounds the string to a specified number of decimals --!>
-            $${formatCurrency(product.priceCents)}
+            ${product.getPrice()}
           </div>
 
           <div class="product-quantity-container">
