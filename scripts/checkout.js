@@ -5,15 +5,18 @@ import { loadCart } from '../data/cart.js';
 //import '../data/cart-class.js';
 //import '../data/backend-practice.js';
 
-async function loadPage(){
-    await loadProductsFetch();
+async function loadPage() {
+    try {
+        await loadProductsFetch();
 
-    await new Promise((resolve) => {
-        loadCart(() => {
-            resolve('value2');
+        await new Promise((resolve) => {
+            loadCart(() => {
+                resolve('value2');
+            });
         });
-    });
-
+    } catch(error){
+        console.log('Unexpected error. Please try again later.');
+    } 
     renderOrderSummery();
     renderPaymentSummary();
     return 'value1'

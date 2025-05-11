@@ -69,9 +69,11 @@ export function loadProductsFetch(){
       if(productDetails.type === 'clothing'){
         return new Clothing(productDetails);
       }
-      return new Product(productDetails);
+      return new Product(productDetails); 
     });
     console.log('load products');
+  }).catch( (error) => {
+    console.log('Unexpected error. Please try again later.');
   });
   return promise;
 }
@@ -92,13 +94,17 @@ export function loadProducts(fun){
       return new Product(productDetails);
     });
     console.log('load products');
-
     fun();
+  });
+
+  xhr.addEventListener('error', () => {
+    console.log('Unexpected error. Please try again later.');
   });
 
   xhr.open('GET','https://supersimplebackend.dev/products');
   xhr.send();
 }
+
 
 /*
 //array object to save product info
