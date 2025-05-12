@@ -4,16 +4,38 @@ import { formatCurrency } from "./utils/money.js";
 
 loadProducts(renderProductsGrid);
 
-function renderProductsGrid(){
+function renderProductsGrid() {
 
-//Products array is created in another file named products.js
-//ForEach loop to add html code for every product in page
-//Add every product html code to productHTML string variable
-/* On line 56 - The toFixed() method converts a number to a string.
-   The toFixed() method rounds the string to a specified number of decimals */
+  //Products array is created in another file named products.js
+  //ForEach loop to add html code for every product in page
+  //Add every product html code to productHTML string variable
+  /* On line 56 - The toFixed() method converts a number to a string.
+     The toFixed() method rounds the string to a specified number of decimals */
 
-let productHTML = '';
-products.forEach((product) => {
+  let productHTML = '';
+  const url = new URL(window.location.href);
+  const search = url.searchParams.get('search');
+
+  let filteredProducts = products;
+
+  // If a search exists in the URL parameters,
+  // filter the products that match the search.
+  if (search) {
+    filteredProducts = products.filter((product) => {
+      let matchingKeyword = false;
+
+      product.keywords.forEach((keyword) => {
+        if (keyword.toLowerCase().includes(search.toLowerCase())) {
+          matchingKeyword = true;
+        }
+      });
+
+      return matchingKeyword ||
+        product.name.toLowerCase().includes(search.toLowerCase());
+    });
+  }
+
+  filteredProducts.forEach((product) => {
     productHTML += `
         <div class="product-container">
           <div class="product-image-container">
@@ -69,31 +91,36 @@ products.forEach((product) => {
           </button>
         </div>
     `;
-});
-document.querySelector('.js-products-grid').innerHTML = productHTML;
+  });
+  document.querySelector('.js-products-grid').innerHTML = productHTML;
 
-//function to update cart quantity
-function updateCartQuantity() {
+  //function to update cart quantity
+  function updateCartQuantity() {
     //count total quantity in cart
     let cartQuantity = 0;
     cart.forEach((cartItem) => {
-        cartQuantity = cartQuantity + cartItem.quantity;
+      cartQuantity = cartQuantity + cartItem.quantity;
     });
     document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-}
-
-//Add eventlistener to add to cart button using forEach loop for every button in page
-document.querySelectorAll('.js-add-to-cart-button')
-    .forEach((button) => {
-        button.addEventListener('click', () => {
-            /*dataset is used to get name of specific product using HTML data attribute used
-              in button class above*/
-            const productId = button.dataset.productId;
-            addToCart(productId);
-            updateCartQuantity();
-        });
-    });
   }
+
+  //Add eventlistener to add to cart button using forEach loop for every button in page
+  document.querySelectorAll('.js-add-to-cart-button')
+    .forEach((button) => {
+      button.addEventListener('click', () => {
+        /*dataset is used to get name of specific product using HTML data attribute used
+          in button class above*/
+        const productId = button.dataset.productId;
+        addToCart(productId);
+        updateCartQuantity();
+      });
+    });
+  document.querySelector('.js-search-button')
+    .addEventListener('click', () => {
+      const search = document.querySelector('.js-search-bar').value;
+      window.location.href = `amazon.html?search=${search}`;
+    });
+}
 
 
 
