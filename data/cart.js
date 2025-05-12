@@ -1,3 +1,4 @@
+import {validDeliveryOption} from './deliveryOption.js';
 //use localstorage to getitem into cart array
 //JSON parse is used to convert string back to its default value
 export let cart;
@@ -85,6 +86,12 @@ export function updateDeliveryOption(productId, deliveryOptionId) {
             matchingItem = cartItem;
         }
     });
+    if (!matchingItem) {
+        return;
+    }
+    if (!validDeliveryOption(deliveryOptionId)) {
+        return;
+    }
     matchingItem.deliveryOptionId = deliveryOptionId;
     saveToStorage();
 }
@@ -92,26 +99,26 @@ export function updateDeliveryOption(productId, deliveryOptionId) {
 //this function is used to update quantity in checkout page
 export function updateQuantity(productId, newQuantity) {
     let matchingItem;
-  
+
     cart.forEach((cartItem) => {
-      if (productId === cartItem.productId) {
-        matchingItem = cartItem;
-      }
+        if (productId === cartItem.productId) {
+            matchingItem = cartItem;
+        }
     });
-  
+
     matchingItem.quantity = newQuantity;
-  
+
     saveToStorage();
-  }
+}
 
-export function loadCart(fun){
-  const xhr = new XMLHttpRequest();
+export function loadCart(fun) {
+    const xhr = new XMLHttpRequest();
 
-  xhr.addEventListener('load', () => {
-    console.log(xhr.response);
-    fun();
-  });
+    xhr.addEventListener('load', () => {
+        console.log(xhr.response);
+        fun();
+    });
 
-  xhr.open('GET','https://supersimplebackend.dev/cart');
-  xhr.send();
+    xhr.open('GET', 'https://supersimplebackend.dev/cart');
+    xhr.send();
 }
