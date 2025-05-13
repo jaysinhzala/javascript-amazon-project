@@ -35,7 +35,7 @@ function saveToStorage() {
 }
 
 //function to add product to cart
-export function addToCart(productId) {
+export function addToCart(productId, quantity=0) {
     /* Belove forEach loop is used to find if same product name is exist or not in cart
             array*/
     let matchingItem;
@@ -48,12 +48,12 @@ export function addToCart(productId) {
     //If product name exist then increase product quantity by 1 
     //else add whole object in array
     if (matchingItem) {
-        matchingItem.quantity += 1;
+        matchingItem.quantity += quantity;
     }
     else {
         cart.push({
             productId: productId,
-            quantity: 1,
+            quantity: quantity,
             deliveryOptionId: '1'
         });
     }
