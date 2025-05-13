@@ -103,8 +103,8 @@ function renderProductsGrid() {
       cartQuantity = cartQuantity + cartItem.quantity;
     });
     document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-    
   }
+  updateCartQuantity();
 
   //Add eventlistener to add to cart button using forEach loop for every button in page
   document.querySelectorAll('.js-add-to-cart-button')
